@@ -372,6 +372,10 @@ require('lazy').setup({
         --   },
         -- },
         -- pickers = {}
+        defaults = {
+          layout_strategy = 'horizontal',
+          layout_config = { height = 0.95, width = 0.95 },
+        },
         extensions = {
           ['ui-select'] = {
             require('telescope.themes').get_dropdown(),
@@ -388,6 +392,7 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>sh', builtin.help_tags, { desc = '[S]earch [H]elp' })
       vim.keymap.set('n', '<leader>sk', builtin.keymaps, { desc = '[S]earch [K]eymaps' })
       vim.keymap.set('n', '<leader>sf', builtin.find_files, { desc = '[S]earch [F]iles' })
+      vim.keymap.set('n', '<leader>sa', builtin.git_files, { desc = '[S]earch [G]it Files' })
       vim.keymap.set('n', '<leader>ss', builtin.builtin, { desc = '[S]earch [S]elect Telescope' })
       vim.keymap.set('n', '<leader>sw', builtin.grep_string, { desc = '[S]earch current [W]ord' })
       vim.keymap.set('n', '<leader>sg', builtin.live_grep, { desc = '[S]earch by [G]rep' })
@@ -400,7 +405,7 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>/', function()
         -- You can pass additional configuration to Telescope to change the theme, layout, etc.
         builtin.current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
-          winblend = 10,
+          layout_config = { height = 0.95, width = 0.95 },
           previewer = false,
         })
       end, { desc = '[/] Fuzzily search in current buffer' })
@@ -634,6 +639,7 @@ require('lazy').setup({
         gopls = {},
         pyright = {},
         gradle_ls = {},
+        groovyls = {},
         -- rust_analyzer = {},
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
         --
@@ -924,6 +930,36 @@ require('lazy').setup({
     --    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
   },
 
+  {
+    'benmills/vimux',
+    vim.keymap.set('n', '<leader>vp', '<cmd>VimuxPromptCommand<CR>'),
+    vim.keymap.set('n', '<Leader>vl', '<cmd>VimuxRunLastCommand<CR>'),
+    vim.keymap.set('n', '<Leader>vm', '<cmd>VimuxPromptCommand("make")<CR><CR>'),
+    vim.keymap.set('n', '<Leader>x', "<cmd>VimuxRunCommand ''.getline('.')<CR>"),
+    vim.keymap.set('n', '<F3>', "<cmd>VimuxRunCommand ''.getline('.')<CR>j"),
+
+    -- function! VimuxSlime()
+    -- call VimuxRunCommand(@v)
+    -- endfunction
+
+    -- " If text is selected, save it in the v buffer and send that buffer it to tmux
+    -- vmap <F3> "vy :call VimuxSlime()<CR>
+    -- vmap <LocalLeader>vs "vy :call VimuxSlime()<CR>
+
+    -- " Select current paragraph and send it to tmux
+    -- nmap <LocalLeader>vs vip<LocalLeader>vs<CR>
+
+    -- " Run the last command on a tmux window on write. Call <Leader>vp
+    -- function! VGautoWrite()
+    -- " window or pane
+    -- let g:VimuxRunnerType = "window"
+    -- autocmd BufWritePost  * :call VimuxRunLastCommand()
+    -- endfunction
+    -- " }}}
+  },
+  {
+    'github/copilot.vim',
+  },
   -- The following comments only work if you have downloaded the kickstart repo, not just copy pasted the
   -- init.lua. If you want these files, they are in the repository, so you can just download them and
   -- place them in the correct locations.
@@ -934,7 +970,7 @@ require('lazy').setup({
   --  Uncomment any of the lines below to enable them (you will need to restart nvim).
   --
   -- require 'kickstart.plugins.debug',
-  -- require 'kickstart.plugins.indent_line',
+  require 'kickstart.plugins.indent_line',
   -- require 'kickstart.plugins.lint',
   -- require 'kickstart.plugins.autopairs',
   -- require 'kickstart.plugins.neo-tree',
