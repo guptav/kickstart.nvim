@@ -55,7 +55,7 @@ vim.o.number = true
 vim.o.relativenumber = true
 
 -- Enable mouse mode, can be useful for resizing splits for example!
-vim.o.mouse = 'a'
+-- vim.o.mouse = 'a'
 
 -- Don't show the mode, since it's already in the status line
 vim.o.showmode = false
@@ -407,7 +407,7 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
       vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
       vim.keymap.set('n', '<leader>sc', '<cmd>FzfLua grep_cword<CR>', { desc = '[S]earch Word under Cursor' })
-      vim.keymap.set('n', '\\rg', '<cmd>FzfLua grep_cword<CR>', { desc = '[S]earch Word under Cursor' })
+      vim.keymap.set('n', '<leader>rg', '<cmd>FzfLua grep_cword<CR>', { desc = '[S]earch Word under Cursor' })
       vim.keymap.set('n', '<F4>', '<cmd>cprevious<CR>', { desc = '[F4] Previous Quickfix' })
       vim.keymap.set('n', '<F5>', '<cmd>cnext<CR>', { desc = '[F5] Next Quickfix' })
 
