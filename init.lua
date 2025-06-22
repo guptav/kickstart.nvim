@@ -648,8 +648,33 @@ require('lazy').setup({
         -- clangd = {},
         gopls = {},
         pyright = {},
-        gradle_ls = {},
         groovyls = {},
+        -- gradle_ls = {
+        --   -- cmd = { ... },
+        --   -- filetypes = { ... },
+        --   -- capabilities = {},
+        --   settings = {
+        --     gradle = {
+        --       javaHome = '/Users/vaibhavgupta/.vscode/extensions/redhat.java-1.42.0-darwin-arm64/jre/21.0.7-macosx-aarch64/bin/java',
+        --       -- classpath = { '/Users/vaibhavgupta/box-repo/jenkins-pipeline-library/build/libs/jenkins-pipeline-library-0.1.0.jar' },
+        --     },
+        --   },
+        -- },
+        -- groovyls = {
+        --   cmd = {
+        --     'java',
+        --     '-jar',
+        --     '/Users/vaibhavgupta/.local/share/nvim/mason/packages/groovy-language-server/build/libs/groovy-language-server.jar',
+        --   },
+        --   -- add classpath to gradle_ls
+        --   settings = {
+        --     groovy = {
+        --       classpath = {
+        --         '/Users/vaibhavgupta/box-repo/jenkins-pipeline-library/build/libs/jenkins-pipeline-library-0.1.0.jar',
+        --       },
+        --     },
+        --   },
+        -- },
         -- rust_analyzer = {},
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
         --
@@ -689,18 +714,19 @@ require('lazy').setup({
       --
       -- You can add other tools here that you want Mason to install
       -- for you, so that they are available from within Neovim.
-      local ensure_installed = vim.tbl_keys(servers or {})
+      local ensure_installed = vim.tbl_keys(servers)
       vim.list_extend(ensure_installed, {
         'stylua', -- Used to format Lua code
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
-
+      -- Setup the LSP servers with the options defined above
       require('mason-lspconfig').setup {
         ensure_installed = {}, -- explicitly set to an empty table (Kickstart populates installs via mason-tool-installer)
         automatic_installation = false,
+        automatic_enable = true, -- automatically enable LSP servers that are installed
         handlers = {
           function(server_name)
-            local server = servers[server_name] or {}
+            local server = servers[server_name]
             -- This handles overriding only values explicitly passed
             -- by the server configuration above. Useful when disabling
             -- certain features of an LSP (for example, turning off formatting for ts_ls)
@@ -709,6 +735,23 @@ require('lazy').setup({
           end,
         },
       }
+      -- vim.lsp.config('groovyls', {
+      --   -- This is a workaround for the groovy-language-server not being able to find the jar file
+      --   cmd = {
+      --     'java',
+      --     '-jar',
+      --     '/Users/vaibhavgupta/.local/share/nvim/mason/packages/groovy-language-server/build/libs/groovy-language-server-all.jar',
+      --     -- '-cp',
+      --     -- '/Users/vaibhavgupta/box-repo/jenkins-pipeline-library/build/libs',
+      --   },
+      --   settings = {
+      --     groovy = {
+      --       classpath = {
+      --         '/Users/vaibhavgupta/box-repo/jenkins-pipeline-library/build/libs',
+      --       },
+      --     },
+      --   },
+      -- })
     end,
   },
 
@@ -981,16 +1024,16 @@ require('lazy').setup({
   --
   -- require 'kickstart.plugins.debug',
   -- require 'kickstart.plugins.indent_line',
-  -- require 'kickstart.plugins.lint',
+  require 'kickstart.plugins.lint',
   -- require 'kickstart.plugins.autopairs',
   require 'kickstart.plugins.neo-tree',
-  -- require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
+  require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
 
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --    This is the easiest way to modularize your config.
   --
   --  Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
-  -- { import = 'custom.plugins' },
+  { import = 'custom.plugins' },
   --
   -- For additional information with loading, sourcing and examples see `:help lazy.nvim-🔌-plugin-spec`
   -- Or use telescope!
