@@ -53,6 +53,10 @@ vim.o.number = true
 -- You can also add relative line numbers, to help with jumping.
 --  Experiment for yourself to see if you like it!
 vim.o.relativenumber = true
+vim.o.tabstop = 4
+vim.o.shiftwidth = 4
+vim.o.expandtab = true -- Use spaces instead of tabs
+vim.o.smartindent = true -- Smart indentation for new lines
 
 -- Enable mouse mode, can be useful for resizing splits for example!
 -- vim.o.mouse = 'a'
@@ -138,11 +142,11 @@ vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagn
 vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
 
 -- TIP: Disable arrow keys in normal mode
-vim.keymap.set('n', '<left>', '<cmd>echo "Use h to move!!"<CR>')
-vim.keymap.set('n', '<right>', '<cmd>echo "Use l to move!!"<CR>')
-vim.keymap.set('n', '<up>', '<cmd>echo "Use k to move!!"<CR>')
-vim.keymap.set('n', '<down>', '<cmd>echo "Use j to move!!"<CR>')
-
+-- vim.keymap.set('n', '<left>', '<cmd>echo "Use h to move!!"<CR>')
+-- vim.keymap.set('n', '<right>', '<cmd>echo "Use l to move!!"<CR>')
+-- vim.keymap.set('n', '<up>', '<cmd>echo "Use k to move!!"<CR>')
+-- vim.keymap.set('n', '<down>', '<cmd>echo "Use j to move!!"<CR>')
+--
 -- Keybinds to make split navigation easier.
 --  Use CTRL+<hjkl> to switch between windows
 --
@@ -157,6 +161,18 @@ vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper win
 -- vim.keymap.set("n", "<C-S-l>", "<C-w>L", { desc = "Move window to the right" })
 -- vim.keymap.set("n", "<C-S-j>", "<C-w>J", { desc = "Move window to the lower" })
 -- vim.keymap.set("n", "<C-S-k>", "<C-w>K", { desc = "Move window to the upper" })
+--
+vim.api.nvim_create_user_command('RG', function(args)
+  -- check if the first argument is empty
+  if not args.fargs or #args.fargs == 0 then
+    -- If no arguments are provided, use the current word under the cursor
+    vim.cmd 'FzfLua grep_cword'
+    return
+  end
+  local first_arg = args.fargs[1]
+  -- Otherwise, use the provided argument as the search term
+  vim.cmd('FzfLua grep search=' .. first_arg)
+end, { nargs = '*' })
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
@@ -243,7 +259,13 @@ require('lazy').setup({
     dependencies = { 'nvim-tree/nvim-web-devicons' },
     -- or if using mini.icons/mini.nvim
     -- dependencies = { "echasnovski/mini.icons" },
-    opts = {},
+    opts = {
+      fzf_tmux_opts = {
+        -- Use the following options to set the size of the fzf window
+        --  See `:help fzf-tmux` for more information
+        ['-p'] = '80%,80%',
+      },
+    },
   },
 
   -- NOTE: Plugins can also be configured to run Lua code when they are loaded.
