@@ -432,6 +432,10 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>rg', '<cmd>FzfLua grep_cword<CR>', { desc = '[S]earch Word under Cursor' })
       vim.keymap.set('n', '<F4>', '<cmd>cprevious<CR>', { desc = '[F4] Previous Quickfix' })
       vim.keymap.set('n', '<F5>', '<cmd>cnext<CR>', { desc = '[F5] Next Quickfix' })
+      -- vim.api.nvim__buf_stats(0).current_lnum
+      vim.keymap.set('n', '<leader>op', '<cmd>!git op ' .. vim.fn.expand '%' .. ':' .. vim.fn.eval 'line(".")' .. '<CR>', {
+        desc = '[O]pen [P]ull Request',
+      })
 
       -- Slightly advanced example of overriding default behavior and theme
       vim.keymap.set('n', '<leader>/', function()
