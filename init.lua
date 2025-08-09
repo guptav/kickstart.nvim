@@ -433,8 +433,14 @@ require('lazy').setup({
       vim.keymap.set('n', '<F4>', '<cmd>cprevious<CR>', { desc = '[F4] Previous Quickfix' })
       vim.keymap.set('n', '<F5>', '<cmd>cnext<CR>', { desc = '[F5] Next Quickfix' })
       -- vim.api.nvim__buf_stats(0).current_lnum
-      vim.keymap.set('n', '<leader>op', '<cmd>!git op ' .. vim.fn.expand '%' .. ':' .. vim.fn.eval 'line(".")' .. '<CR>', {
-        desc = '[O]pen [P]ull Request',
+      vim.keymap.set('n', '<leader>op', function()
+        local filename = vim.fn.expand '%p:h' -- Get the path of the current file
+        local current_line = vim.fn.line '.' -- Get the current line number
+        return '<cmd>!git op ' .. filename .. ':' .. current_line .. '<CR>'
+      end, {
+        desc = '[O]pen [P]ull Request. Valid for git repositories only',
+        expr = true,
+        silent = true,
       })
 
       -- Slightly advanced example of overriding default behavior and theme
