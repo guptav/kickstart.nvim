@@ -195,6 +195,8 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   end,
 })
 
+require('keymaps')
+
 -- Highlight the trailing spaces
 vim.api.nvim_create_autocmd('ColorScheme', {
   pattern = '*',
