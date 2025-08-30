@@ -58,6 +58,13 @@ vim.o.shiftwidth = 4
 vim.o.expandtab = true -- Use spaces instead of tabs
 vim.o.smartindent = true -- Smart indentation for new lines
 
+vim.keymap.set('i', '<Tab>', function()
+  local llm = require 'llm.completion'
+  if llm.shown_suggestion ~= nil then
+    llm.complete()
+  end
+end, { noremap = true, silent = true })
+
 -- Enable mouse mode, can be useful for resizing splits for example!
 -- vim.o.mouse = 'a'
 
@@ -188,6 +195,15 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   end,
 })
 
+-- Highlight the trailing spaces
+vim.api.nvim_create_autocmd('ColorScheme', {
+  pattern = '*',
+  callback = function()
+    vim.api.nvim_set_hl(0, 'TrailingWhitespace', { bg = 'IndianRed1', ctermbg = 'red' })
+    vim.cmd 'match TrailingWhitespace /\\s\\+$/'
+  end,
+})
+
 -- [[ Install `lazy.nvim` plugin manager ]]
 --    See `:help lazy.nvim.txt` or https://github.com/folke/lazy.nvim for more info
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
@@ -252,7 +268,32 @@ require('lazy').setup({
       },
     },
   },
-
+  {
+    'huggingface/llm.nvim',
+    vim.keymap.set('i', '<Tab>', function()
+      local llm = require 'llm.completion'
+      if llm.shown_suggestion ~= nil then
+        llm.complete()
+      end
+    end, { noremap = true, silent = true }),
+    enabled = true,
+    opts = {
+      -- cf Setup
+      backend = 'ollama',
+      model = 'codellama:7b',
+      url = 'http://localhost:11434', -- llm-ls uses "/api/generate"
+      accept_keymap = '<Tab>',
+      dismiss_keymap = '<S-Tab>',
+      -- cf https://github.com/ollama/ollama/blob/main/docs/api.md#parameters
+      request_body = {
+        -- Modelfile options for the model you use
+        options = {
+          temperature = 0.2,
+          top_p = 0.95,
+        },
+      },
+    },
+  },
   {
     'ibhagwan/fzf-lua',
     -- optional for icon support
