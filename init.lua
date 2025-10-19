@@ -287,6 +287,7 @@ require('lazy').setup({
       accept_keymap = '<Tab>',
       dismiss_keymap = '<S-Tab>',
       -- cf https://github.com/ollama/ollama/blob/main/docs/api.md#parameters
+      --
       request_body = {
         -- Modelfile options for the model you use
         options = {
@@ -809,6 +810,13 @@ require('lazy').setup({
             server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
             require('lspconfig')[server_name].setup(server)
           end,
+        },
+        require('lspconfig').marksman.setup {
+          settings = {
+            marksman = {
+              prefer_filename_over_header = true,
+            },
+          },
         },
       }
       -- vim.lsp.config('groovyls', {
