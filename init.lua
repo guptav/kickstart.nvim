@@ -811,13 +811,7 @@ require('lazy').setup({
             vim.lsp.config[server_name].setup(server)
           end,
         },
-        vim.lsp.config['marksman'].setup {
-          settings = {
-            marksman = {
-              prefer_filename_over_header = true,
-            },
-          },
-        },
+        vim.lsp.enable 'marksman',
       }
       -- vim.lsp.config('groovyls', {
       --   -- This is a workaround for the groovy-language-server not being able to find the jar file
